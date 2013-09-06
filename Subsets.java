@@ -3,30 +3,23 @@ public class Solution {
         // Start typing your Java solution below
         // DO NOT write main() function
         Arrays.sort(S);
-        
-        return sub(S, 0);
-    }
-    
-    public ArrayList<ArrayList<Integer>> sub(int[] s, int index) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> subSet = new ArrayList<Integer>();
         
-        if (index == s.length) {
-            res.add(new ArrayList<Integer>());
-            return res;
-        }
-        
-        ArrayList<ArrayList<Integer>> set = sub(s, index+1);
-        
-        for (ArrayList<Integer> a : set) {
-            res.add(a);
-            
-            ArrayList<Integer> b = new ArrayList<Integer>(a);
-            b.add(0, s[index]);
-            
-            res.add(b);
-        }
-        
+        sub(S, 0, subSet, res);
         return res;
     }
     
+    public void sub(int[] s, int index, ArrayList<Integer> subSet, ArrayList<ArrayList<Integer>> res) {
+        if (index == s.length) {
+            res.add(new ArrayList<Integer>(subSet));
+            return;
+        }
+        
+        sub(s, index+1, subSet, res);
+        
+        subSet.add(s[index]);
+        sub(s, index+1, subSet, res);
+        subSet.remove(subSet.size() - 1);
+    }
 }
