@@ -17,38 +17,23 @@ public class Solution {
             return;
             
         int n = board[0].length;
+        Queue<Point> q = new LinkedList<Point>();
         
         for (int i = 0; i < m; ++i) {
             if (board[i][0] == 'O')
-                bfs(board, i, 0);
+                q.offer(new Point(i, 0));
                 
             if (board[i][n-1] == 'O')
-                bfs(board, i, n-1);
+                q.offer(new Point(i, n-1));
         }
         
         for (int i = 0; i < n; ++i) {
             if (board[0][i] == 'O')
-                bfs(board, 0, i);
+                q.offer(new Point(0, i));
                 
             if (board[m-1][i] == 'O')
-                bfs(board, m-1, i);
-        }
-        
-        for (int i = 0; i < m; ++i)
-            for (int j = 0; j < n; ++j) {
-                if (board[i][j] == 'O')
-                    board[i][j] = 'X';
-                    
-                if (board[i][j] == '.')
-                    board[i][j] = 'O';
-            }
-    }
-    
-    public void bfs(char[][] board, int x, int y) {
-        int m = board.length, n = board[0].length;
-        
-        Queue<Point> q = new LinkedList<Point>();
-        q.offer(new Point(x, y));
+                q.offer(new Point(m-1, i));
+        }        
         
         while (!q.isEmpty()) {
             Point temp = q.poll();
@@ -66,5 +51,14 @@ public class Solution {
             if (temp.y-1 != -1 && board[temp.x][temp.y-1] == 'O')
                 q.offer(new Point(temp.x, temp.y-1));
         }
+        
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j) {
+                if (board[i][j] == 'O')
+                    board[i][j] = 'X';
+                    
+                if (board[i][j] == '.')
+                    board[i][j] = 'O';
+            }
     }
 }
