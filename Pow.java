@@ -7,7 +7,8 @@ public class Solution {
         
         double res = 1;
         
-        for (int bit = 31; bit >= 0; --bit) {
+        int bit = (int) (Math.log(n) / Math.log(2));
+        for (; bit >= 0; --bit) {
             res *= res;
             if (((n >>> bit) & 1) != 0)
                 res *= x;
