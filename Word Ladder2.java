@@ -9,14 +9,13 @@ public class Solution {
         q.offer(start);
         
         HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
-        map.put(start, new ArrayList<String>());
+    		HashSet<String> levelSet = new HashSet<String>();
+        boolean found = false;
 
-        ArrayList<ArrayList<String>> res = new ArrayList<ArrayList<String>>();
-        
         while (!q.isEmpty()) {
             --count;
             String word = q.poll();
-                
+            
             for (int i = 0; i < l; ++i) {
                 char[] a = word.toCharArray();
 
@@ -25,31 +24,68 @@ public class Solution {
                     String s = new String(a);
                     
                     if (s.equals(end)) {
-                        ArrayList<String> ladder = new ArrayList<String>();
-                        ladder.add(start);
-                        ladder.addAll(map.remove(word));
-                        ladder.add(end);
+                        ArrayList<String> list = map.get(end);
+                        if (list == null) {
+                            list = new ArrayList<String>();
+                            map.put(end, list);
+                        }
                         
-                        res.add(ladder);
+                        found = true;
+                        list.add(word);
                         break;
                     }
                     
-                    if (dict.contains(s) && !map.containsKey(s)) {
-                        ArrayList<String> tempList = new ArrayList<String>(map.get(word));
-                        tempList.add(s);
-                        map.put(s, tempList);
-                        q.offer(s);
+                    if (dict.contains(s)) {
+                        ArrayList<String> list = map.get(s);
+                        if (list == null) {
+                            list = new ArrayList<String>();
+                            map.put(s, list);
+                        }
+                        
+                        list.add(word);
+                        
+                        if (!levelSet.contains(s)) {
+                        	levelSet.add(s);
+                        	q.offer(s);
+                        }
                     }
                 }
             }
             
             if (count == 0) {
-                if (res.size() != 0)
+                if (found)
                     break;
+                
                 count = q.size();
+                levelSet.clear();
+                dict.removeAll(q);
             }
         }
         
-        return res;
+        
+        ArrayList<ArrayList<String>> ret = new ArrayList<ArrayList<String>>();
+        
+        if (found) {
+        	ArrayList<String> path = new ArrayList<String>();
+        	path.add(end);
+        	buildPath(map, end, start, path, ret);
+        }
+        
+        return ret;
+    }
+    
+    public void buildPath(HashMap<String, ArrayList<String>> map, String end, String start, ArrayList<String> path, ArrayList<ArrayList<String>> ret) {
+        if (end.equals(start)) {
+            ret.add(new ArrayList<String>(path));
+            return;
+        }
+        
+        ArrayList<String> list = map.get(end);
+        
+        for (String word : list) {
+            path.add(0, word);
+            buildPath(map, word, start, path, ret);
+            path.remove(0);
+        }
     }
 }
